@@ -1,5 +1,25 @@
 /**
- * Description: Created: 06.01.2010
+ * Description: The main interface
+ * Created: 06.01.2010
+ * 
+ * -----
+ * 
+ * Copyright by Steffen Splitt 2010
+ * 
+ * This file is part of Manga Downloader.
+ * 
+ * Manga Downloader is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Manga Downloader is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Manga Downloader. If not, see <http://www.gnu.org/licenses/>.
  */
 package de.xxlbug.md.vis;
 
@@ -90,6 +110,7 @@ public class AppWindow {
 	private StackLayout								stLayout;
 	private Table											tblMangaList;
 	private Table											tblToChoose;
+	private Text											txtSearch;
 
 	public AppWindow(Manga[] manga) {
 		this.om = new OneManga();
@@ -173,53 +194,65 @@ public class AppWindow {
 			SashForm sshListInfo = new SashForm(this.shlWindow, SWT.NONE);
 			{
 				Composite cmpMangaList = new Composite(sshListInfo, SWT.NONE);
-				cmpMangaList.setLayout(new GridLayout(3, false));
+				cmpMangaList.setLayout(new GridLayout(1, false));
 				{
-					Combo cboWebsites = new Combo(cmpMangaList, SWT.READ_ONLY);
+					Group grpWebsites = new Group(cmpMangaList, SWT.NONE);
+					grpWebsites.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+					grpWebsites.setLayout(new GridLayout(4, false));
+					grpWebsites.setText(this.res.getString("general"));
+
+					Combo cboWebsites = new Combo(grpWebsites, SWT.READ_ONLY);
 					cboWebsites.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 					cboWebsites.add(this.om.getName());
 					cboWebsites.select(0);
-				}
-				{
-					Button btnPreferences = new Button(cmpMangaList, SWT.PUSH);
 					{
-						GridData gd_btnPreferences = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
-						btnPreferences.setLayoutData(gd_btnPreferences);
-					}
-					{
-						Listener lstPreferences = new Listener() {
+						Button btnPreferences = new Button(grpWebsites, SWT.PUSH);
+						btnPreferences.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+						btnPreferences.addListener(SWT.Selection, new Listener() {
+							@Override
 							public void handleEvent(Event event) {
 								new Preferences(AppWindow.this.shlWindow, AppWindow.this.settings);
 								AppWindow.this.settings = new Settings();
 								AppWindow.this.loadLanguage(AppWindow.this.settings.getLanguage());
 							}
-						};
-
-						btnPreferences.addListener(SWT.Selection, lstPreferences);
+						});
+						InputStream inPreferences = this.getClass().getResourceAsStream("/ico/preferences.png");
+						btnPreferences.setImage(new Image(this.shlWindow.getDisplay(), inPreferences));
 					}
-					InputStream inPreferences = this.getClass().getResourceAsStream("/ico/preferences.png");
-					btnPreferences.setImage(new Image(this.shlWindow.getDisplay(), inPreferences));
+					{
+						Button btnInfo = new Button(grpWebsites, SWT.PUSH);
+						btnInfo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+						btnInfo.addListener(SWT.Selection, new Listener() {
+							@Override
+							public void handleEvent(Event event) {
+								new Info(AppWindow.this.shlWindow);
+							}
+						});
+						InputStream in = this.getClass().getResourceAsStream("/ico/info.png");
+						btnInfo.setImage(new Image(this.shlWindow.getDisplay(), in));
+					}
 				}
+
 				{
 					// search group with all options
 					Group grpSearch = new Group(cmpMangaList, SWT.NONE);
-					grpSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1));
+					grpSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 					grpSearch.setLayout(new GridLayout(2, false));
 					grpSearch.setText(this.res.getString("search"));
 					{
-						final Text txtSearch = new Text(grpSearch, SWT.BORDER | SWT.SEARCH | SWT.ICON_SEARCH);
+						this.txtSearch = new Text(grpSearch, SWT.BORDER | SWT.SEARCH | SWT.ICON_SEARCH);
 						{
 							GridData gd_txtSearch = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
-							txtSearch.setLayoutData(gd_txtSearch);
+							this.txtSearch.setLayoutData(gd_txtSearch);
 						}
 						{
 							Listener lstSearch = new Listener() {
 
 								public void handleEvent(Event event) {
-									if ((event.keyCode == SWT.CR) && !txtSearch.getText().equals("")) {
+									if ((event.keyCode == SWT.CR) && !AppWindow.this.txtSearch.getText().equals("")) {
 										ArrayList<Manga> result = new ArrayList<Manga>();
 										for (Manga m : AppWindow.this.manga) {
-											if (m.getName().toLowerCase().contains(txtSearch.getText().toLowerCase())) {
+											if (m.getName().toLowerCase().contains(AppWindow.this.txtSearch.getText().toLowerCase())) {
 												result.add(m);
 											}
 										}
@@ -233,15 +266,15 @@ public class AppWindow {
 											}
 											AppWindow.this.updateMangaList(actualResults);
 										} else {
-											txtSearch.setBackground(txtSearch.getDisplay().getSystemColor(SWT.COLOR_RED));
+											AppWindow.this.txtSearch.setBackground(AppWindow.this.txtSearch.getDisplay().getSystemColor(SWT.COLOR_RED));
 										}
-									} else if (txtSearch.getText().equals("")) {
+									} else if (AppWindow.this.txtSearch.getText().equals("")) {
 										AppWindow.this.updateMangaList(AppWindow.this.manga);
 									}
 								}
 							};
 
-							txtSearch.addListener(SWT.KeyDown, lstSearch);
+							this.txtSearch.addListener(SWT.KeyDown, lstSearch);
 						}
 					}
 					{
@@ -254,6 +287,7 @@ public class AppWindow {
 							Listener lstRefresh = new Listener() {
 
 								public void handleEvent(Event event) {
+									AppWindow.this.txtSearch.setText("");
 									AppWindow.this.manga = AppWindow.this.om.getAllManga();
 									AppWindow.this.updateMangaList(AppWindow.this.manga);
 								}
@@ -266,7 +300,7 @@ public class AppWindow {
 				}
 				{
 					this.tblMangaList = new Table(cmpMangaList, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
-					this.tblMangaList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+					this.tblMangaList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 					this.tblMangaList.setLinesVisible(true);
 
 					Listener lstMangaListChange = new Listener() {
