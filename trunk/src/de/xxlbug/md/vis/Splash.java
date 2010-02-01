@@ -1,5 +1,25 @@
 /**
- * Shows a splashscreen with logo and stuff
+ * Description: Splash screen with some infos and loads the first set of data before the main window opens and the user can interact
+ * Created: 05.01.2010
+ * 
+ * -----
+ * 
+ * Copyright by Steffen Splitt 2010
+ * 
+ * This file is part of Manga Downloader.
+ * 
+ * Manga Downloader is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Manga Downloader is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Manga Downloader. If not, see <http://www.gnu.org/licenses/>.
  */
 package de.xxlbug.md.vis;
 
@@ -57,18 +77,19 @@ public class Splash {
 		lblAuthor.setText("Steffen Splitt");
 
 		{
-			Label lblCopyright_1 = new Label(this.shlMain, SWT.NONE);
-			lblCopyright_1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-			lblCopyright_1.setText("Copyright:");
+			Label lblCopyright = new Label(this.shlMain, SWT.NONE);
+			lblCopyright.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+			lblCopyright.setText("Copyright:");
+
+			Label lblCopyrightText = new Label(this.shlMain, SWT.None);
+			lblCopyrightText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+			lblCopyrightText.setText("For private use only");
 		}
-
-		Label lblCopyright = new Label(this.shlMain, SWT.None);
-		lblCopyright.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		lblCopyright.setText("For private use only");
-
-		Label lblCopyYear = new Label(this.shlMain, SWT.NONE);
-		lblCopyYear.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 2, 1));
-		lblCopyYear.setText("\u00A9 2010");
+		{
+			Label lblCopyYear = new Label(this.shlMain, SWT.NONE);
+			lblCopyYear.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 2, 1));
+			lblCopyYear.setText("\u00A9 2010");
+		}
 	}
 
 	/**
@@ -131,7 +152,7 @@ public class Splash {
 			InputStream in = this.getClass().getResourceAsStream("/ico/md.png");
 			this.shlMain.setImage(new Image(display, in));
 		}
-		this.shlMain.setSize(361, 460);
+		this.shlMain.setSize(360, 460);
 		this.shlMain.setMinimumSize(new Point(300, 300));
 
 		this.createImage();
