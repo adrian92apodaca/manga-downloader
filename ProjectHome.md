@@ -1,0 +1,1 @@
+With the **MangaDownloader MD** you can browse avaible manga from different sites and download them to your harddrive. The difference from most other download programs are the _graphical interface_ and the _platform independence_.
